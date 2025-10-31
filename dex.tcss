@@ -1,0 +1,16 @@
+Input {
+    dock: top;
+    width: 100%;
+  }
+
+#pokemon-con {
+  width: 100%;
+  height: 1fr;
+  align: center middle;
+  overflow: auto;
+}
+
+#pokemon {
+  width: auto;
+  height: auto;
+}

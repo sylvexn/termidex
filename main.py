@@ -1,22 +1,44 @@
+from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Label
+from textual.containers import VerticalScroll
+from textual.widgets import Input, Static
 
-TEXT = """I must not fear.
-Fear is the mind-killer.
-Fear is the little-death that brings total obliteration.
-I will face my fear.
-I will permit it to pass over me and through me.
-And when it has gone past, I will turn the inner eye to see its path.
-Where the fear has gone there will be nothing. Only I will remain."""
+try:
+    import httpx
+except ImportError:
+    raise ImportError("!!! 'pip install httpx' !!!")
 
-class FirstApp(App):
+
+class Pokedex(App):
     """
     Test App
     """
 
+    CSS_PATH = "dex.tcss"
+
     def compose(self) -> ComposeResult:
-        yield Label(TEXT)
+        yield Input(placeholder="Search for a Pokemon")
+        with VerticalScroll(id="pokemon-con"):
+            yield Static(id="pokemon")
+    
+    async def on_input_submitted(self, message: Input.Changed) -> None:
+        self.update_dex(message.value)
+
+    @work(exclusive=True)
+    async def update_dex(self, pokemon: str) -> None:
+        pokemon_info = self.query_one("#pokemon", Static)
+        if pokemon:
+            url = f"https://pokeapi.co/api/v2/pokemon/{pokemon}"
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url)
+                data = response.json()
+                name = data.get("name")
+                type1 = data["types"][0]["type"]["name"]
+                info = f"{name} is a {type1} pokemon!"
+                pokemon_info.update(info)
+        else:
+            pokemon_info.update("")
 
 if __name__ == "__main__":
-    app = FirstApp()
+    app = Pokedex()
     app.run()
