@@ -1,0 +1,13 @@
+[project]
+name = "termidex"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "textual>=6.4.0",
+    "textual-dev>=1.8.0",
+]
