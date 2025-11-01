@@ -32,13 +32,14 @@ class Pokedex(App):
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
                 data = response.json()
+
                 name = data.get("name")
-                type1 = data["types"][0]["type"]["name"]
-                type2 = data["types"][1]["type"]["name"]
-                if type2 is None:
-                    info = f"{name} is a {type1} pokemon!"
+                ptypes = [t["type"]["name"] for t in data.get("types", [])]
+                if len(ptypes) == 1:
+                    info = f"{name} is a {ptypes[0]} pokemon!"
                 else:
-                    info = f"{name} is a {type1} & {type2} pokemon!"
+                    info = f"{name} is a {' and '.join(ptypes)} pokemon!"
+
                 pokemon_info.update(info)
         else:
             pokemon_info.update("")
