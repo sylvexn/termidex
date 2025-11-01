@@ -20,7 +20,7 @@ class Pokedex(App):
         yield Input(placeholder="Search for a Pokemon")
         with VerticalScroll(id="pokemon-con"):
             yield Static(id="pokemon")
-    
+
     async def on_input_submitted(self, message: Input.Changed) -> None:
         self.update_dex(message.value)
 
@@ -34,10 +34,15 @@ class Pokedex(App):
                 data = response.json()
                 name = data.get("name")
                 type1 = data["types"][0]["type"]["name"]
-                info = f"{name} is a {type1} pokemon!"
+                type2 = data["types"][1]["type"]["name"]
+                if type2 is None:
+                    info = f"{name} is a {type1} pokemon!"
+                else:
+                    info = f"{name} is a {type1} & {type2} pokemon!"
                 pokemon_info.update(info)
         else:
             pokemon_info.update("")
+
 
 if __name__ == "__main__":
     app = Pokedex()
