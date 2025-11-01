@@ -33,13 +33,24 @@ class Pokedex(App):
                 response = await client.get(url)
                 data = response.json()
 
+                # get pokemon name
                 name = data.get("name")
-                ptypes = [t["type"]["name"] for t in data.get("types", [])]
-                if len(ptypes) == 1:
-                    info = f"{name} is a {ptypes[0]} pokemon!"
-                else:
-                    info = f"{name} is a {' and '.join(ptypes)} pokemon!"
 
+                # get type or types
+                pTypes = [t["type"]["name"] for t in data.get("types", [])]
+                if len(pTypes) == 1:
+                    types = pTypes[0]
+                else:
+                    types = " / ".join(pTypes)
+
+                # get abilities     TODO: hidden
+                pAbilities = [a["ability"]["name"] for a in data.get("abilities", [])]
+                if len(pAbilities) == 1:
+                    abs = pAbilities[0]
+                else:
+                    abs = " & ".join(pAbilities)
+
+                info = f"name: {name}\ntypes: {types}\nabilities: {abs}"
                 pokemon_info.update(info)
         else:
             pokemon_info.update("")
